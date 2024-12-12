@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mysql-service:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fooddelivery
+    ports:
+      - "3308:3306" # Port 3308 sur l'hôte, redirigé vers 3306 sur le conteneur
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  fooddelivery-app:
+    build:
+      context: ./fooddelivery
+      dockerfile: Dockerfile
+    container_name: fooddelivery_app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-service:3306/fooddelivery
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8080:8080" # Port 8080 pour l'application
+    depends_on:
+      mysql-service:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
