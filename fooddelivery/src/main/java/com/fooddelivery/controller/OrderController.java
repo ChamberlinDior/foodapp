@@ -7,6 +7,7 @@ import com.fooddelivery.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ public class OrderController {
     // Endpoint pour créer une commande
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody OrderDTO orderDTO) {
+        // Sauvegarde de la commande avec récupération du numéro de téléphone et du nom du client
         Order savedOrder = orderService.saveOrder(orderDTO);
         return ResponseEntity.ok(savedOrder);
     }
@@ -69,5 +71,19 @@ public class OrderController {
     public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
         return ResponseEntity.ok("Commande supprimée avec succès.");
+    }
+
+    // Endpoint pour confirmer une commande
+    @PutMapping("/{id}/confirm")
+    public ResponseEntity<Order> confirmOrder(@PathVariable Long id) {
+        Optional<Order> orderOptional = orderService.confirmOrder(id);
+        return orderOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Endpoint pour récupérer les commandes non confirmées
+    @GetMapping("/unconfirmed")
+    public ResponseEntity<List<Order>> getUnconfirmedOrders() {
+        List<Order> orders = orderService.getUnconfirmedOrders();
+        return ResponseEntity.ok(orders);
     }
 }

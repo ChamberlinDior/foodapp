@@ -7,6 +7,10 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
+
     List<Order> findByClientEmail(String clientEmail);
-    List<Order> findByLivreurId(Long livreurId); // Méthode pour récupérer les commandes par livreur
+    List<Order> findByLivreurId(Long livreurId);
+
+    // Récupérer les commandes non confirmées
+    List<Order> findByConfirmedFalse();
 }

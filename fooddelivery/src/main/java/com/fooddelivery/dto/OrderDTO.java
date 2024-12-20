@@ -14,6 +14,7 @@ public class OrderDTO {
     private Long id;
     private String clientName;
     private String clientEmail;
+    private String clientPhoneNumber; // Nouveau champ pour le numéro de téléphone
     private String restaurantName;
     private List<String> items;
     private int quantity;
@@ -28,4 +29,6 @@ public class OrderDTO {
     // Localisation spécifique du livreur
     private double livreurLocationLatitude;
     private double livreurLocationLongitude;
+
+    private boolean confirmed; // Champ optionnel, le front peut l'ignorer
 }

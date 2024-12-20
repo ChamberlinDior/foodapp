@@ -21,6 +21,7 @@ public class Order {
 
     private String clientName;
     private String clientEmail;
+    private String clientPhoneNumber; // Nouveau champ pour le numéro de téléphone
     private String restaurantName;
     private double price;
     private int quantity;
@@ -31,12 +32,13 @@ public class Order {
     private List<String> items;
 
     private LocalDateTime orderTime;
-    private double latitude; // Localisation de la commande
+    private double latitude;  // Localisation de la commande
     private double longitude; // Localisation de la commande
 
-    // Localisation spécifique du livreur lors de l'association à la commande
     private double livreurLocationLatitude;
     private double livreurLocationLongitude;
-
     private Long livreurId;
+
+    @Column(name = "confirmed", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
+    private Boolean confirmed = false; // Par défaut non confirmé
 }

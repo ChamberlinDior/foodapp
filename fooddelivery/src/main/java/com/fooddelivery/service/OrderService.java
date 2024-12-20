@@ -2,7 +2,9 @@ package com.fooddelivery.service;
 
 import com.fooddelivery.dto.OrderDTO;
 import com.fooddelivery.model.Order;
+import com.fooddelivery.model.User;
 import com.fooddelivery.repository.OrderRepository;
+import com.fooddelivery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +19,27 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
+    private UserRepository userRepository; // Injection du UserRepository
+
+    @Autowired
     private NotificationService notificationService;
 
-    // Méthode pour sauvegarder une nouvelle commande
+    // Sauvegarder une nouvelle commande à partir d'un DTO
     public Order saveOrder(OrderDTO orderDTO) {
         Order order = new Order();
-        order.setClientName(orderDTO.getClientName());
-        order.setClientEmail(orderDTO.getClientEmail());
+
+        // Récupérer l'utilisateur à partir de l'email
+        Optional<User> userOptional = userRepository.findByEmail(orderDTO.getClientEmail());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            order.setClientName(user.getFirstName() + " " + user.getLastName());
+            order.setClientEmail(user.getEmail());
+            order.setClientPhoneNumber(user.getPhoneNumber()); // Enregistrer le numéro de téléphone
+        } else {
+            throw new IllegalArgumentException("Utilisateur introuvable avec l'email : " + orderDTO.getClientEmail());
+        }
+
+        // Enregistrer les autres informations de la commande
         order.setRestaurantName(orderDTO.getRestaurantName());
         order.setItems(orderDTO.getItems());
         order.setQuantity(orderDTO.getQuantity());
@@ -31,6 +47,13 @@ public class OrderService {
         order.setOrderTime(LocalDateTime.now());
         order.setLatitude(orderDTO.getLatitude());
         order.setLongitude(orderDTO.getLongitude());
+        // confirmed est déjà false par défaut
+
+        return orderRepository.save(order);
+    }
+
+    // Méthode pour sauvegarder (ou mettre à jour) une commande existante
+    public Order saveOrder(Order order) {
         return orderRepository.save(order);
     }
 
@@ -49,21 +72,19 @@ public class OrderService {
         return orderRepository.findById(id);
     }
 
-    // Méthode pour assigner un livreur à une commande et envoyer une notification
+    // Assignation d’un livreur à une commande
     public Optional<Order> assignLivreur(Long orderId, Long livreurId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
             order.setLivreurId(livreurId);
             orderRepository.save(order);
-
-            // Envoi de la notification après l'assignation du livreur
             notificationService.sendLivreurAssignedNotification(order);
         }
         return orderOptional;
     }
 
-    // Méthode pour assigner un livreur avec sa localisation
+    // Assignation d’un livreur avec localisation
     public Optional<Order> assignLivreurWithLocation(Long orderId, Long livreurId, double livreurLatitude, double livreurLongitude) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         if (orderOptional.isPresent()) {
@@ -72,15 +93,30 @@ public class OrderService {
             order.setLivreurLocationLatitude(livreurLatitude);
             order.setLivreurLocationLongitude(livreurLongitude);
             orderRepository.save(order);
-
-            // Envoi de la notification après l'assignation du livreur
             notificationService.sendLivreurAssignedNotification(order);
         }
         return orderOptional;
     }
 
-    // Méthode pour supprimer une commande
+    // Supprimer une commande
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
+    }
+
+    // Récupérer les commandes non confirmées
+    public List<Order> getUnconfirmedOrders() {
+        return orderRepository.findByConfirmedFalse();
+    }
+
+    // Confirmer une commande
+    public Optional<Order> confirmOrder(Long id) {
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+            order.setConfirmed(true);
+            order = orderRepository.save(order);
+            return Optional.of(order);
+        }
+        return Optional.empty();
     }
 }
