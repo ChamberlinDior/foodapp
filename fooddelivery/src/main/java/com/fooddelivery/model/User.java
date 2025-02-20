@@ -27,4 +27,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    // Champs de géolocalisation pour les utilisateurs clients
+    private Double latitude;
+    private Double longitude;
 }

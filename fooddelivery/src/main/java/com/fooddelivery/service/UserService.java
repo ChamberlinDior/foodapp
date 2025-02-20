@@ -33,7 +33,11 @@ public class UserService {
         user.setEmail(userDTO.getEmail());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setRole(userDTO.getRole() != null ? userDTO.getRole() : UserRole.CLIENT);
-        user.setPassword(userDTO.getPassword()); // Remarque : ajoutez un hashage ici pour sécuriser les mots de passe
+        user.setPassword(userDTO.getPassword()); // Pensez à ajouter du hashage ici pour sécuriser les mots de passe
+
+        // Affectation des coordonnées de géolocalisation (peuvent être null)
+        user.setLatitude(userDTO.getLatitude());
+        user.setLongitude(userDTO.getLongitude());
 
         return userRepository.save(user);
     }

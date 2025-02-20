@@ -2,12 +2,13 @@ package com.fooddelivery.service;
 
 import com.fooddelivery.dto.OrderDTO;
 import com.fooddelivery.model.Order;
+import com.fooddelivery.model.Restaurant;
 import com.fooddelivery.model.User;
 import com.fooddelivery.repository.OrderRepository;
+import com.fooddelivery.repository.RestaurantRepository;
 import com.fooddelivery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,12 +20,16 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private UserRepository userRepository; // Injection du UserRepository
+    private UserRepository userRepository;
+
+    @Autowired
+    private RestaurantRepository restaurantRepository;
 
     @Autowired
     private NotificationService notificationService;
 
-    // Sauvegarder une nouvelle commande à partir d'un DTO
+    // Création d'une nouvelle commande avec géolocalisation du client et du restaurant.
+    // Les coordonnées du client sont fournies par le front, celles du restaurant sont récupérées à partir du nom.
     public Order saveOrder(OrderDTO orderDTO) {
         Order order = new Order();
 
@@ -34,45 +39,56 @@ public class OrderService {
             User user = userOptional.get();
             order.setClientName(user.getFirstName() + " " + user.getLastName());
             order.setClientEmail(user.getEmail());
-            order.setClientPhoneNumber(user.getPhoneNumber()); // Enregistrer le numéro de téléphone
+            order.setClientPhoneNumber(user.getPhoneNumber());
         } else {
             throw new IllegalArgumentException("Utilisateur introuvable avec l'email : " + orderDTO.getClientEmail());
         }
 
-        // Enregistrer les autres informations de la commande
+        // Enregistrer les informations de la commande
         order.setRestaurantName(orderDTO.getRestaurantName());
         order.setItems(orderDTO.getItems());
         order.setQuantity(orderDTO.getQuantity());
         order.setPrice(orderDTO.getPrice());
         order.setOrderTime(LocalDateTime.now());
+
+        // Géolocalisation du client (fournie par le front)
         order.setLatitude(orderDTO.getLatitude());
         order.setLongitude(orderDTO.getLongitude());
-        // confirmed est déjà false par défaut
+
+        // Récupérer le restaurant et affecter sa géolocalisation
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findByName(orderDTO.getRestaurantName());
+        if (restaurantOptional.isPresent()) {
+            Restaurant restaurant = restaurantOptional.get();
+            order.setRestaurantLatitude(restaurant.getLatitude());
+            order.setRestaurantLongitude(restaurant.getLongitude());
+        } else {
+            throw new IllegalArgumentException("Restaurant introuvable avec le nom : " + orderDTO.getRestaurantName());
+        }
 
         return orderRepository.save(order);
     }
 
-    // Méthode pour sauvegarder (ou mettre à jour) une commande existante
+    // Sauvegarder une commande déjà construite
     public Order saveOrder(Order order) {
         return orderRepository.save(order);
     }
 
-    // Méthode pour obtenir toutes les commandes
+    // Récupérer toutes les commandes
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    // Méthode pour obtenir les commandes d'un client par email
+    // Récupérer les commandes d'un client à partir de son email
     public List<Order> getOrdersByClientEmail(String clientEmail) {
         return orderRepository.findByClientEmail(clientEmail);
     }
 
-    // Méthode pour obtenir une commande par son ID
+    // Récupérer une commande par son ID
     public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);
     }
 
-    // Assignation d’un livreur à une commande
+    // Assigner un livreur à une commande
     public Optional<Order> assignLivreur(Long orderId, Long livreurId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         if (orderOptional.isPresent()) {
@@ -84,7 +100,7 @@ public class OrderService {
         return orderOptional;
     }
 
-    // Assignation d’un livreur avec localisation
+    // Assigner un livreur à une commande en ajoutant sa géolocalisation
     public Optional<Order> assignLivreurWithLocation(Long orderId, Long livreurId, double livreurLatitude, double livreurLongitude) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         if (orderOptional.isPresent()) {
@@ -98,7 +114,7 @@ public class OrderService {
         return orderOptional;
     }
 
-    // Supprimer une commande
+    // Supprimer une commande par son ID
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }
@@ -118,5 +134,10 @@ public class OrderService {
             return Optional.of(order);
         }
         return Optional.empty();
+    }
+
+    // Méthode pour récupérer un restaurant par son nom
+    public Optional<Restaurant> getRestaurantByName(String name) {
+        return restaurantRepository.findByName(name);
     }
 }

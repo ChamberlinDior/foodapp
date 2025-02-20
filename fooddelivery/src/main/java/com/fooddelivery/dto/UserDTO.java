@@ -16,4 +16,8 @@ public class UserDTO {
     private String phoneNumber;
     private UserRole role;
     private String password;
+
+    // Champs de géolocalisation pour le client
+    private Double latitude;
+    private Double longitude;
 }

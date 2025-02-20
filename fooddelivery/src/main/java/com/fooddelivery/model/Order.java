@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,8 +31,18 @@ public class Order {
     private List<String> items;
 
     private LocalDateTime orderTime;
-    private double latitude;  // Localisation de la commande
-    private double longitude; // Localisation de la commande
+
+    // Géolocalisation du client (les valeurs ne doivent pas être modifiées après création)
+    @Column(updatable = false)
+    private double latitude;
+    @Column(updatable = false)
+    private double longitude;
+
+    // Géolocalisation du restaurant (doit rester fixe après création)
+    @Column(updatable = false)
+    private double restaurantLatitude;
+    @Column(updatable = false)
+    private double restaurantLongitude;
 
     private double livreurLocationLatitude;
     private double livreurLocationLongitude;

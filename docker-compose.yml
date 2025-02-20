@@ -8,7 +8,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: fooddelivery
     ports:
-      - "3308:3306" # Port 3308 sur l'hôte, redirigé vers 3306 sur le conteneur
+      - "3308:3306"  # Port local 3308 → conteneur 3306
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -20,15 +20,15 @@ services:
 
   fooddelivery-app:
     build:
-      context: ./fooddelivery
-      dockerfile: Dockerfile
+      context: ./fooddelivery   # Dockerfile se trouve dans le dossier "fooddelivery"
+      dockerfile: Dockerfile    # Nom du Dockerfile
     container_name: fooddelivery_app
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-service:3306/fooddelivery
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
     ports:
-      - "8080:8080" # Port 8080 pour l'application
+      - "8080:8080"
     depends_on:
       mysql-service:
         condition: service_healthy

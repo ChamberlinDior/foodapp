@@ -3,7 +3,6 @@ package com.fooddelivery.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,8 +19,8 @@ public class OrderDTO {
     private int quantity;
     private double price;
     private LocalDateTime orderTime;
-    private double latitude;
-    private double longitude;
+    private double latitude;   // Géolocalisation du client (latitude)
+    private double longitude;  // Géolocalisation du client (longitude)
 
     // ID du livreur associé à la commande
     private Long livreurId;

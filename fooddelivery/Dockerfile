@@ -7,9 +7,9 @@ ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
 # Copier les fichiers Maven
-COPY mvnw ./
+COPY mvnw ./mvnw
 COPY .mvn .mvn
-COPY pom.xml ./
+COPY pom.xml ./pom.xml
 
 # Télécharger les dépendances Maven
 RUN ./mvnw dependency:go-offline
