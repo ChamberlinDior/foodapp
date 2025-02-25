@@ -27,7 +27,7 @@ public class FooddeliveryApplication implements CommandLineRunner {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("http://localhost:3000", "http://98.81.244.176")
+						.allowedOrigins("http://localhost:3000", "http://3.140.185.230")
 						.allowedMethods("GET", "POST", "PUT", "DELETE")
 						.allowedHeaders("*");
 			}
