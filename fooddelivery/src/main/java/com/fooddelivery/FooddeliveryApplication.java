@@ -27,7 +27,7 @@ public class FooddeliveryApplication implements CommandLineRunner {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("http://localhost:3000", "http://3.140.185.230:8080")
+						.allowedOrigins("http://localhost:3000", "http://3.15.230.202:8080")
 						.allowedMethods("GET", "POST", "PUT", "DELETE")
 						.allowedHeaders("*");
 			}
@@ -38,7 +38,7 @@ public class FooddeliveryApplication implements CommandLineRunner {
 	public class DefaultController {
 		@GetMapping("/")
 		public String home() {
-			return "Bienvenue sur FoodDelivery ! Accédez à notre application à l'adresse : http://3.140.185.230:8080";
+			return "Bienvenue sur FoodDelivery ! Accédez à notre application à l'adresse : http://3.15.230.202:8080";
 		}
 	}
 }
