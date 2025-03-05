@@ -19,7 +19,7 @@ public class NotificationService {
 
     // URL de l’API FCM
     private final String FCM_API_URL = "https://fcm.googleapis.com/fcm/send";
-    // Remplacez cette valeur par votre clé serveur FCM
+    // Remplacez cette valeur par votre clé serveur FCM (ou celle pour Expo Push via FCM)
     private final String SERVER_KEY = "AAAA...votre-cle-FCM...";
 
     // Envoi de notification lors de l'assignation d'une commande au livreur
@@ -48,6 +48,7 @@ public class NotificationService {
         Map<String, Object> notification = new HashMap<>();
         notification.put("title", title);
         notification.put("body", message);
+        // Vous pouvez ajouter d'autres options (par exemple, sound personnalisé) ici
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("to", deviceToken);

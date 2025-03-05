@@ -95,7 +95,7 @@ public class OrderService {
             Order order = orderOptional.get();
             order.setLivreurId(livreurId);
             orderRepository.save(order);
-            // Déclenche l'envoi de la notification push via FCM
+            // Déclencher l'envoi de la notification push depuis le backend
             notificationService.sendLivreurAssignedNotification(order);
         }
         return orderOptional;
@@ -110,7 +110,7 @@ public class OrderService {
             order.setLivreurLocationLatitude(livreurLatitude);
             order.setLivreurLocationLongitude(livreurLongitude);
             orderRepository.save(order);
-            // Déclenche l'envoi de la notification push via FCM
+            // Déclencher l'envoi de la notification push depuis le backend
             notificationService.sendLivreurAssignedNotification(order);
         }
         return orderOptional;

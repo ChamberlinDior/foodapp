@@ -60,7 +60,7 @@ public class LivreurController {
         return updatedLivreur.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Nouvel endpoint pour mettre à jour le deviceToken du livreur
+    // Endpoint pour mettre à jour le deviceToken du livreur
     @PutMapping("/{id}/updateDeviceToken")
     public ResponseEntity<Livreur> updateDeviceToken(@PathVariable Long id, @RequestBody Map<String, String> body) {
         String deviceToken = body.get("deviceToken");
@@ -68,7 +68,6 @@ public class LivreurController {
         if (livreurOpt.isPresent()) {
             Livreur livreur = livreurOpt.get();
             livreur.setDeviceToken(deviceToken);
-            // Sauvegarde via une méthode surchargée dans le service (voir ci-dessous)
             Livreur updatedLivreur = livreurService.saveLivreur(livreur);
             return ResponseEntity.ok(updatedLivreur);
         }
