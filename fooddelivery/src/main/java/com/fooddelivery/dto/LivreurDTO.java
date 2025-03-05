@@ -16,4 +16,6 @@ public class LivreurDTO {
     private double latitude;
     private double longitude;
     private String motDePasse;
+    // Nouveau champ pour le token de notification push
+    private String deviceToken;
 }

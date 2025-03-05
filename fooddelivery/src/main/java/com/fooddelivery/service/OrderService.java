@@ -88,19 +88,20 @@ public class OrderService {
         return orderRepository.findById(id);
     }
 
-    // Assigner un livreur à une commande
+    // Assigner un livreur à une commande et envoyer la notification push correspondante
     public Optional<Order> assignLivreur(Long orderId, Long livreurId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
             order.setLivreurId(livreurId);
             orderRepository.save(order);
+            // Déclenche l'envoi de la notification push via FCM
             notificationService.sendLivreurAssignedNotification(order);
         }
         return orderOptional;
     }
 
-    // Assigner un livreur à une commande en ajoutant sa géolocalisation
+    // Assigner un livreur à une commande en ajoutant sa géolocalisation et envoyer la notification push
     public Optional<Order> assignLivreurWithLocation(Long orderId, Long livreurId, double livreurLatitude, double livreurLongitude) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         if (orderOptional.isPresent()) {
@@ -109,6 +110,7 @@ public class OrderService {
             order.setLivreurLocationLatitude(livreurLatitude);
             order.setLivreurLocationLongitude(livreurLongitude);
             orderRepository.save(order);
+            // Déclenche l'envoi de la notification push via FCM
             notificationService.sendLivreurAssignedNotification(order);
         }
         return orderOptional;

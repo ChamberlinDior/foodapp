@@ -5,7 +5,6 @@ import com.fooddelivery.model.Livreur;
 import com.fooddelivery.repository.LivreurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +23,12 @@ public class LivreurService {
         livreur.setLatitude(livreurDTO.getLatitude());
         livreur.setLongitude(livreurDTO.getLongitude());
         livreur.setMotDePasse(livreurDTO.getMotDePasse());
+        // Le deviceToken sera mis à jour via l'endpoint dédié
+        return livreurRepository.save(livreur);
+    }
 
+    // Méthode surchargée pour sauvegarder directement une entité Livreur
+    public Livreur saveLivreur(Livreur livreur) {
         return livreurRepository.save(livreur);
     }
 
