@@ -1,3 +1,4 @@
+// Order.java
 package com.fooddelivery.model;
 
 import jakarta.persistence.*;
@@ -32,13 +33,13 @@ public class Order {
 
     private LocalDateTime orderTime;
 
-    // Géolocalisation du client (les valeurs ne doivent pas être modifiées après création)
+    // Géolocalisation du client (ne peut pas être modifiée après création)
     @Column(updatable = false)
     private double latitude;
     @Column(updatable = false)
     private double longitude;
 
-    // Géolocalisation du restaurant (doit rester fixe après création)
+    // Géolocalisation du restaurant (fixe après création)
     @Column(updatable = false)
     private double restaurantLatitude;
     @Column(updatable = false)
@@ -47,6 +48,12 @@ public class Order {
     private double livreurLocationLatitude;
     private double livreurLocationLongitude;
     private Long livreurId;
+
+    // Nouveaux champs pour les informations du livreur
+    private String livreurNom;
+    private String livreurPrenom;
+    private String livreurNumeroTelephone;
+    private String livreurPhotoProfil;
 
     @Column(name = "confirmed", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
     private Boolean confirmed = false; // Par défaut non confirmé

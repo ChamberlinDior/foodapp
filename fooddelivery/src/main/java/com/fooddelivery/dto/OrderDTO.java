@@ -1,3 +1,4 @@
+// OrderDTO.java
 package com.fooddelivery.dto;
 
 import lombok.AllArgsConstructor;
@@ -22,12 +23,16 @@ public class OrderDTO {
     private double latitude;   // Géolocalisation du client (latitude)
     private double longitude;  // Géolocalisation du client (longitude)
 
-    // ID du livreur associé à la commande
+    // Pour l’assignation du livreur
     private Long livreurId;
-
-    // Localisation spécifique du livreur
     private double livreurLocationLatitude;
     private double livreurLocationLongitude;
 
-    private boolean confirmed; // Champ optionnel, le front peut l'ignorer
+    // Nouveaux champs pour les informations du livreur
+    private String livreurNom;
+    private String livreurPrenom;
+    private String livreurNumeroTelephone;
+    private String livreurPhotoProfil;
+
+    private boolean confirmed; // Champ optionnel
 }
